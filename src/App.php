@@ -43,7 +43,7 @@ class App {
                     $this->addDonation();
                     break;
                 case '6':
-                    $this->viewAllDonations();
+                    $this->getAllDonations();
                     break;
                 case '7':
                     $this->viewDonationsByCharity();
@@ -140,8 +140,8 @@ class App {
         }
     }
 
-    private function viewAllDonations() {
-        $donations = $this->donationService->viewAllDonations();
+    private function getAllDonations() {
+        $donations = $this->donationService->getAllDonations();
 
         if ($donations) {
             foreach ($donations as $donation) {

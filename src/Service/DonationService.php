@@ -29,7 +29,7 @@ class DonationService {
         return null; // No error
     }
 
-    public function viewAllDonations() {
+    public function getAllDonations() {
         return $this->donationRepository->getAllDonations();
     }
 
