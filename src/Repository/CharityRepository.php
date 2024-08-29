@@ -34,13 +34,15 @@ class CharityRepository {
         $stmt->execute([date('Y-m-d H:i:s'), $id]);
     }
 
-    public function getPdo() {
-        return $this->db;
-    }
-
     public function isCharityActive($id) {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM charities WHERE id = :id AND deleted_at IS NULL");
         $stmt->execute([':id' => $id]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function isCharityExists($name, $email) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM charities WHERE name = :name AND email = :email AND deleted_at IS NULL");
+        $stmt->execute([':name' => $name, ':email' => $email]);
         return $stmt->fetchColumn() > 0;
     }
     

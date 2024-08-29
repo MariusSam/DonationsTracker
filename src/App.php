@@ -63,14 +63,18 @@ class App {
 
 
     private function viewCharities() {
-        $charities = $this->charityService->getAllCharities();
+        try {
+            $charities = $this->charityService->getAllCharities();
 
-        if($charities) {
-            foreach ($charities as $charity) {
-                $this->cli->displayMessage("ID: {$charity->getId()} | Name: {$charity->getName()} | Email: {$charity->getEmail()}");
+            if ($charities) {
+                foreach ($charities as $charity) {
+                    $this->cli->displayMessage("ID: {$charity->getId()} | Name: {$charity->getName()} | Email: {$charity->getEmail()}");
+                }
+            } else {
+                $this->cli->displayMessage("No charities found.");
             }
-        } else {
-            $this->cli->displayMessage("No charities found.");
+        } catch (\PDOException $e) {
+            $this->cli->displayMessage("Error: Database not initialized or missing table(s). Please ensure the database is properly set up.");
         }
        
     }
@@ -178,7 +182,7 @@ class App {
             $result = $this->charityService->importCharitiesFromCSV($filePath);
     
             // Display the results using the CLI
-            $this->cli->displayMessage("Charities imported successfully. {$result['imported']} imported, {$result['skipped']} skipped.");
+            $this->cli->displayMessage("{$result['imported']} imported, {$result['skipped']} skipped.");
         } catch (\Exception $e) {
             // Display any errors that occurred during the import process
             $this->cli->displayMessage("Error during import: " . $e->getMessage());

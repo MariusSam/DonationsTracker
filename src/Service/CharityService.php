@@ -24,7 +24,7 @@ class CharityService {
         $charity = new Charity($name, $email);
         $this->charityRepository->addCharity($charity);
 
-        return null; // No error, operation successful
+        return null;
     }
 
     public function updateCharity($id, $name, $email) {
@@ -58,14 +58,23 @@ class CharityService {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
+    public function isCharityExists($name, $email) {
+        return $this->charityRepository->isCharityExists($name, $email);
+    }
+
     public function importCharitiesFromCSV($filePath) {
         // Check if the file exists before trying to open it
         if (!file_exists($filePath)) {
             throw new \Exception("File not found: $filePath");
         }
     
-        // Open the CSV file for reading
-        if (($handle = fopen($filePath, 'r')) !== FALSE) {
+        $handle = null;
+        try {
+            // Open the CSV file for reading
+            if (($handle = fopen($filePath, 'r')) === FALSE) {
+                throw new \Exception("Could not open the CSV file.");
+            }
+    
             // Skip the header row if there is one (optional)
             fgetcsv($handle, 1000, ',');
     
@@ -98,22 +107,22 @@ class CharityService {
                 $importedCount++;
             }
     
-            fclose($handle);
-    
             // Return a summary of the import process
             return [
                 'imported' => $importedCount,
                 'skipped' => $skippedCount,
             ];
-        } else {
-            throw new \Exception("Could not open the CSV file.");
+    
+        } catch (\Exception $e) {
+            // Handle exceptions (you could log the error, show a message, etc.)
+            throw new \Exception("Error processing CSV file: " . $e->getMessage());
+        } finally {
+            // Ensure the file handle is closed even if an error occurs
+            if ($handle !== null) {
+                fclose($handle);
+            }
         }
     }
 
-    private function isCharityExists($name, $email) {
-        $stmt = $this->charityRepository->getPDO()->prepare("SELECT COUNT(*) FROM charities WHERE name = :name AND email = :email AND deleted_at IS NULL");
-        $stmt->execute([':name' => $name, ':email' => $email]);
     
-        return $stmt->fetchColumn() > 0;
-    }
 }
