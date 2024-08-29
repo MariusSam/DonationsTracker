@@ -85,6 +85,7 @@ class App {
         $this->cli->displayMessage("Enter email: ");
         $email = $this->cli->getUserInput();
 
+        // Add charity and handle potential errors
         $error = $this->charityService->addCharity($name, $email);
         if ($error) {
             $this->cli->displayMessage("Error: $error");
@@ -108,6 +109,7 @@ class App {
         $this->cli->displayMessage("Enter new email: ");
         $email = $this->cli->getUserInput();
 
+        // Update charity and handle potential errors
         $error = $this->charityService->updateCharity($id, $name, $email);
         if ($error) {
             $this->cli->displayMessage("Error: $error");
@@ -120,6 +122,7 @@ class App {
         $this->cli->displayMessage("Enter charity ID to delete: ");
         $id = $this->cli->getUserInput();
 
+        // Delete charity and handle potential errors
         $error = $this->charityService->deleteCharity($id);
         if ($error) {
             $this->cli->displayMessage("Error: $error");
@@ -136,6 +139,7 @@ class App {
         $this->cli->displayMessage("Enter charity ID: ");
         $charityId = $this->cli->getUserInput();
 
+        // Add donation and handle potential errors
         $error = $this->donationService->addDonation($donorName, $amount, $charityId);
         if ($error) {
             $this->cli->displayMessage("Error: $error");
@@ -178,10 +182,10 @@ class App {
         $filePath = "data/$fileName";
     
         try {
-            // Call the import method in CharityService and get the result summary
+            // Call the import method in CharityService
             $result = $this->charityService->importCharitiesFromCSV($filePath);
     
-            // Display the results using the CLI
+            // Display the results 
             $this->cli->displayMessage("{$result['imported']} imported, {$result['skipped']} skipped.");
         } catch (\Exception $e) {
             // Display any errors that occurred during the import process

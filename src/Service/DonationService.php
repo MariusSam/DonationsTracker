@@ -15,10 +15,12 @@ class DonationService {
     }
 
     public function addDonation($donorName, $amount, $charityId) {
+        // Check if the charity is active
         if (!$this->charityService->isCharityActive($charityId)) {
             return "Cannot add donation to an inactive charity.";
         }
 
+        // Validate the donation amount
         if (!is_numeric($amount) || $amount <= 0) {
             return "Invalid donation amount.";
         }

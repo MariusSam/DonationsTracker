@@ -18,46 +18,49 @@ class CharityService {
 
     public function addCharity($name, $email) {
         if (!$this->isValidEmail($email)) {
-            return "Invalid email format.";
+            return "Invalid email format."; // Return error if email is invalid
         }
 
         $charity = new Charity($name, $email);
         $this->charityRepository->addCharity($charity);
 
-        return null;
+        return null; // Return null if no error
     }
 
     public function updateCharity($id, $name, $email) {
         if (!$this->isValidEmail($email)) {
-            return "Invalid email format.";
+            return "Invalid email format."; // Return error if email is invalid
         }
 
         if (!$this->isCharityActive($id)) {
-            return "Charity with ID $id does not exist or has been deleted.";
+            return "Charity with ID $id does not exist or has been deleted."; // Return error if charity does not exist
         }
 
         $charity = new Charity($name, $email, $id);
         $this->charityRepository->updateCharity($charity);
-        return null;
+        return null; // Return null if no error
     }
 
     public function deleteCharity($id) {
         if (!$this->isCharityActive($id)) {
-            return "Charity with ID $id does not exist or has been deleted.";
+            return "Charity with ID $id does not exist or has been deleted."; // Return error if charity does not exist
         }
 
         $this->charityRepository->deleteCharity($id);
-        return null;
+        return null; // Return null if no error
     }
     
+    // Check if a charity is active by its ID
     public function isCharityActive($id) {
         return $this->charityRepository->isCharityActive($id);
     }
 
+    // Validate if the provided email format is correct
     private function isValidEmail($email) {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
+    // Check if a charity already exists in the database
     public function isCharityExists($name, $email) {
         return $this->charityRepository->isCharityExists($name, $email);
     }
@@ -75,7 +78,7 @@ class CharityService {
                 throw new \Exception("Could not open the CSV file.");
             }
     
-            // Skip the header row if there is one (optional)
+            // Skip the header row if there is one
             fgetcsv($handle, 1000, ',');
     
             $importedCount = 0;
@@ -83,7 +86,7 @@ class CharityService {
     
             // Process each row of the CSV file
             while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                // Check if the CSV row has the expected number of columns (e.g., 2 for name and email)
+                // Check if the CSV row has the expected number of columns
                 if (count($data) < 2) {
                     continue; // Skip if the row doesn't have enough data
                 }
@@ -114,7 +117,7 @@ class CharityService {
             ];
     
         } catch (\Exception $e) {
-            // Handle exceptions (you could log the error, show a message, etc.)
+            // Handle exceptions 
             throw new \Exception("Error processing CSV file: " . $e->getMessage());
         } finally {
             // Ensure the file handle is closed even if an error occurs

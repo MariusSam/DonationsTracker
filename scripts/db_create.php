@@ -10,7 +10,7 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS charities (
     deleted_at TEXT DEFAULT NULL
 )");
 
-// Create donations table with soft delete
+// Create donations table
 $pdo->exec("CREATE TABLE IF NOT EXISTS donations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     donor_name TEXT NOT NULL,
@@ -22,5 +22,5 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS donations (
 
 echo "Database setup complete.\n";
 
-// Call the seed_database.php script
+// Call the seed_database.php script to populate the database with initial data
 require_once 'db_seed.php';
